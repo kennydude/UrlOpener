@@ -1,0 +1,11 @@
+This application is being released as-is. You can do whatever you like with it.
+
+Under cc-by-sa-nc (Well, you can't sell it, that's just wrong!).
+
+The purpose of this application is to allow to easily and quickly be able to test android URI intents.
+
+Features:
+* Always show that "Select application" box when there's more than one app
+* Display last urls you used
+
+If you want more features, add them yourself! With the application being completly open source you can easilly import into Eclipse (or whatever) and pull this into the emulator. Have fun!
