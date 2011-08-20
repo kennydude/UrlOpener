@@ -6,17 +6,22 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 public class WakeLockActivity extends ListActivity {
@@ -41,7 +46,7 @@ public class WakeLockActivity extends ListActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 				final CharSequence[] items = {
-					"Kill App",
+					getResources().getText(R.string.kill_app)
 				};
 				AlertDialog.Builder builder = new AlertDialog.Builder(WakeLockActivity.this);
 				builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -49,7 +54,7 @@ public class WakeLockActivity extends ListActivity {
 				        if(item == 0){
 				        	if(ShellInterface.isSuAvailable()) {
 				        		WakeLockInfo wli = wake_locks.get(position);
-								String output = ShellInterface.getProcessOutput("kill " + wli.pid);
+								ShellInterface.getProcessOutput("kill " + wli.pid);
 				        	}
 				        }
 				        dialog.dismiss();
@@ -64,6 +69,26 @@ public class WakeLockActivity extends ListActivity {
         new LoadWakeLocks().execute();
     }
     
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.wake_lock, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			wake_locks.clear();
+			fa.notifyDataSetChanged();
+			new LoadWakeLocks().execute();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+    
     public class FeedAdapter extends ArrayAdapter<WakeLockInfo> {
     	public FeedAdapter(Context context, int textViewResourceId,
 				List<WakeLockInfo> objects) {
@@ -76,7 +101,10 @@ public class WakeLockActivity extends ListActivity {
 			
 			WakeLockInfo wli = this.getItem(position);
 			
-			String caption = "<b>" + wli.name + "</b><br/>Type:" + wli.type + "<br/>PID: " + wli.pid;
+			String caption = "<b>" + wli.name + "</b><br/>";
+			caption += getResources().getString(R.string.type).replace("{type}", wli.type);
+			caption += "<br/>";
+			caption += getResources().getString(R.string.pid).replace("{pid}", wli.pid.toString());
 			ed.setPadding(5, 5, 5, 5);
 			ed.setText(Html.fromHtml(caption));
 			
@@ -89,8 +117,27 @@ public class WakeLockActivity extends ListActivity {
     	@SuppressWarnings("unchecked")
 		@Override
     	protected void onPostExecute(Object r){
-    		WakeLockActivity.this.wake_locks.addAll((Collection<? extends WakeLockInfo>) r);
-    		fa.notifyDataSetChanged();
+    		try{ dg.dismiss(); }
+    		catch(Exception e){}
+    		if(r == null){
+    			Toast.makeText(WakeLockActivity.this,
+    					getResources().getString(R.string.no_root),
+    					Toast.LENGTH_LONG).show();
+    		} else{
+	    		WakeLockActivity.this.wake_locks.addAll((Collection<? extends WakeLockInfo>) r);
+	    		fa.notifyDataSetChanged();
+    		}
+    	}
+    	ProgressDialog dg;
+    	
+    	@Override
+    	protected void onPreExecute(){
+    		dg = new ProgressDialog(WakeLockActivity.this);
+			dg.setMessage(getResources().getText(
+					R.string.one_moment_please)
+			);
+			dg.setCancelable(false);
+			dg.show();
     	}
     	
 		@Override
@@ -127,7 +174,7 @@ public class WakeLockActivity extends ListActivity {
 					}
 					return wake_locks;
 				} else{
-					Log.d("o", "...");
+					return null;
 				}
 			} catch(Exception e){
 				Log.e("e", "error");

@@ -9,4 +9,10 @@
     <string name="no_market">You do not have Android Market installed</string>
     <string name="url_opener">Url Opener</string>
     <string name="wake_locks">Wake Locks [ROOT]</string>
+    <string name="pid">PID: {pid}</string>
+    <string name="type">Type: {type}</string>
+    <string name="kill_app">Kill App</string>
+    <string name="one_moment_please">One Moment Please</string>
+    <string name="refresh">Refresh</string>
+    <string name="no_root">Your device isn\'t rooted, or the app couldn\'t access it</string>
 </resources>
