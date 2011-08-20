@@ -30,7 +30,7 @@ public class UrlOpenerActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.url_opener);
         x = getSharedPreferences("UrlOpenerPrefs", Context.MODE_PRIVATE);
         ListView thelist = (ListView) findViewById(R.id.RecentUrls);
         recent = new ArrayList<String>();
