@@ -14,5 +14,11 @@
     <string name="kill_app">Kill App</string>
     <string name="one_moment_please">One Moment Please</string>
     <string name="refresh">Refresh</string>
-    <string name="no_root">Your device isn\'t rooted, or the app couldn\'t access it</string>
+    <string name="package_name">Application: {app}</string>
+    <string name="modulus_11">Modulus 11</string>
+    <string name="go">Go</string>
+    <string name="check_digit">Check Digit Included</string>
+    <string name="value">Value</string>
+    <string name="process_name">Process Name: {pn}</string>
+    <string name="no_root">Your device isn\'t rooted, or the app couldn\'t access su</string>
 </resources>

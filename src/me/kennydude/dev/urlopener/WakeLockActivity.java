@@ -9,6 +9,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -33,6 +35,8 @@ public class WakeLockActivity extends ListActivity {
 		public Integer pid;
 		public String name;
 		public String type;
+		public String package_name;
+		public String app_name;
 	}
 	
     @Override
@@ -43,7 +47,6 @@ public class WakeLockActivity extends ListActivity {
         this.getListView().setAdapter(fa);
         getListView().setOnItemLongClickListener(new OnItemLongClickListener(){
 
-			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 				final CharSequence[] items = {
 					getResources().getText(R.string.kill_app)
@@ -105,6 +108,13 @@ public class WakeLockActivity extends ListActivity {
 			caption += getResources().getString(R.string.type).replace("{type}", wli.type);
 			caption += "<br/>";
 			caption += getResources().getString(R.string.pid).replace("{pid}", wli.pid.toString());
+			caption += "<br/>";
+			caption += getResources().getString(R.string.process_name).replace("{pn}", wli.package_name);
+			if(wli.app_name != null){
+				caption += "<br/>";
+				caption += getResources().getString(R.string.package_name).replace("{app}", wli.app_name);
+			}
+			
 			ed.setPadding(5, 5, 5, 5);
 			ed.setText(Html.fromHtml(caption));
 			
@@ -147,6 +157,7 @@ public class WakeLockActivity extends ListActivity {
 					String output = ShellInterface.getProcessOutput("dumpsys power");
 					String[] lines = output.split("\n");
 					Boolean locks = false;
+					PackageManager pm = getPackageManager();
 					
 					List<WakeLockInfo> wake_locks = new ArrayList<WakeLockInfo>();
 					for(String line : lines){
@@ -165,6 +176,18 @@ public class WakeLockActivity extends ListActivity {
 								String x = parts[6].split("=")[1];
 								
 								wli.pid = Integer.parseInt(x.substring(0, x.length()-1));
+								
+								// Now we have the PID, here's a sneaky pull to get the Package Name
+								String ps_output = ShellInterface.getProcessOutput("ps " + wli.pid);
+								String[] ps_lines = ps_output.split("\n");
+								ps_output = ps_lines[1];
+								ps_lines = ps_output.split(" +");
+								ps_output = ps_lines[ps_lines.length - 1];
+								wli.package_name = ps_output;
+								try{
+									PackageInfo pi = pm.getPackageInfo(wli.package_name, PackageManager.GET_GIDS);
+									wli.app_name = pi.applicationInfo.loadLabel(pm).toString();
+								} catch(Exception e){}
 								
 								wake_locks.add(wli);
 							} else{
