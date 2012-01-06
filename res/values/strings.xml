@@ -21,4 +21,10 @@
     <string name="value">Value</string>
     <string name="process_name">Process Name: {pn}</string>
     <string name="no_root">Your device isn\'t rooted, or the app couldn\'t access su</string>
+    <string name="icons">Icons</string>
+    
+    <string name="url_opener_desc">Send intents for specific URLs. Helps you test application support</string>
+    <string name="wake_locks_desc">See what wake locks are running</string>
+    <string name="modulus_11_desc">Calculate Modulus 11 things</string>
+    <string name="icons_desc">See bounding lines for icons of installed applications</string>
 </resources>

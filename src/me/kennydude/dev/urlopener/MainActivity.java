@@ -7,6 +7,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,6 +24,7 @@ public class MainActivity extends ListActivity {
 		@SuppressWarnings("rawtypes")
 		public Class ActivityClass;
 		public int StringId;
+		public int descriptionId;
 	}
 	
     @Override
@@ -34,16 +36,25 @@ public class MainActivity extends ListActivity {
         DevTool u = new DevTool();
         u.ActivityClass = UrlOpenerActivity.class;
         u.StringId = R.string.url_opener;
+        u.descriptionId = R.string.url_opener_desc;
         tools.add(u);
         
         u = new DevTool();
         u.ActivityClass = WakeLockActivity.class;
         u.StringId = R.string.wake_locks;
+        u.descriptionId = R.string.wake_locks_desc;
         tools.add(u);
 
         u = new DevTool();
         u.ActivityClass = Mod11Activity.class;
         u.StringId = R.string.modulus_11;
+        u.descriptionId = R.string.modulus_11_desc;
+        tools.add(u);
+        
+        u = new DevTool();
+        u.ActivityClass = IconActivity.class;
+        u.StringId = R.string.icons;
+        u.descriptionId = R.string.icons_desc;
         tools.add(u);
         
         fa = new FeedAdapter(this,android.R.layout.simple_list_item_1 , tools);
@@ -73,9 +84,9 @@ public class MainActivity extends ListActivity {
 			
 			DevTool dt = this.getItem(position);
 			
-			ed.setPadding(5, 5, 5, 5);
-			ed.setText(getText(dt.StringId));
-			ed.setTextSize(20);
+			ed.setPadding(15, 15, 15, 15);
+			ed.setText(Html.fromHtml("<big><big><big>" + getText(dt.StringId) + "</big></big></big><br/>"
+					+ getText(dt.descriptionId)));
 			
 			return ed;
 		}
