@@ -12,3 +12,5 @@
 *R.java
 
 # Copied from http://github.com/github/gitignore
+gen
+bin

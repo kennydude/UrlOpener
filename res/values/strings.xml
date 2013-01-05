@@ -23,6 +23,9 @@
     <string name="no_root">Your device isn\'t rooted, or the app couldn\'t access su</string>
     <string name="icons">Icons</string>
     
+    <string name="anr">ANR</string>
+    <string name="anr_desc">Cause ANRs</string>
+    
     <string name="url_opener_desc">Send intents for specific URLs. Helps you test application support</string>
     <string name="wake_locks_desc">See what wake locks are running</string>
     <string name="modulus_11_desc">Calculate Modulus 11 things</string>

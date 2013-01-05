@@ -57,6 +57,12 @@ public class MainActivity extends ListActivity {
         u.descriptionId = R.string.icons_desc;
         tools.add(u);
         
+        u = new DevTool();
+        u.ActivityClass = ANRActivity.class;
+        u.StringId = R.string.anr;
+        u.descriptionId = R.string.anr_desc;
+        tools.add(u);
+        
         fa = new FeedAdapter(this,android.R.layout.simple_list_item_1 , tools);
         this.getListView().setAdapter(fa);
         
