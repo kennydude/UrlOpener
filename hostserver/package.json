@@ -1,7 +1,12 @@
 {
-	"name" : "adb-hostserver",
+	"name" : "devtools-hostserver",
 	"version" : "0.1.0",
 	"dependencies" : {
-		"ws" : "*"
+		"ws" : "*",
+		"execSync" : "*",
+		"nconf" : "*"
+	},
+	"bin" : {
+		"devtools-hostserver" : "./service.js"
 	}
 }

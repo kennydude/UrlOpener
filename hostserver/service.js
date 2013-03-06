@@ -1,18 +1,37 @@
-console.log("TODO: setup");
+console.log("Host Server Client tool.");
+console.log("This allows you to easily use the software on your device");
+console.log("You should have already installed the latest version of Dev Tools+ and");
+console.log("Enabled the server");
 
-var	otherPort = 80,
+var	execSync = require('execSync'),
+	nconf = require('nconf');
+
+console.log("------------------------------------------------");
+console.log("Setting up port forwarding...");
+
+var code = execSync.code('adb forward tcp:4000 tcp:4000');
+if(code != 0){
+	console.log("Failure");
+	process.exit(-1);
+}
+
+nconf.env().argv();
+
+var	otherPort = nconf.get("proxy:port") || 80,
 	bridgePort = 4000;
+
+console.log("Proxy is set to run from port :" + otherPort);
 
 var	requests = {};
 
-console.log("Connecting to application on :" + bridgePort);
+console.log("Connecting to device on :" + bridgePort);
 
 var	WebSocket = require('ws'),
 	net = require("net");
 var socket = new WebSocket('ws://127.0.0.1:' + bridgePort + "/",{ "path" : "/", "transports" : ["websocket"] } );
 
 socket.on("open", function(){
-	console.log("Connected to application on device");
+	console.log("Connected to device on device");
 });
 
 socket.on("message", function(msg){
@@ -30,7 +49,6 @@ socket.on("message", function(msg){
 			if(req == undefined){
 				req = net.connect({ port : otherPort });
 				req.on("data", function(data){
-					console.log("#" + reqid + ": Response");
 					for(var i = 0; i < data.length; i+= 30){
 						var m = Math.min(data.length, i+30);
 						socket.send(reqid + " " + data.slice( i, m ).toString("base64") + "\n");
@@ -48,17 +66,16 @@ socket.on("message", function(msg){
 				console.log("#" + reqid + " new");
 			}
 
-			//line = new Buffer(msg['c'], "base64");
-			//l = line.toString("utf8").replace("\n", "\r\n");
 			l = msg['c'];
 
-			if(l.indexOf("Connection: keep-alive") != -1){ return; }
+			l = l.replace("Connection: keep-alive\r\n", "");
 			req.write(l);
+			
 		} catch(e){ console.log(e); }
 	}
 });
 
 socket.on("close", function(){
-	console.log("Disconnected from application");
+	console.log("Disconnected from device");
 });
 

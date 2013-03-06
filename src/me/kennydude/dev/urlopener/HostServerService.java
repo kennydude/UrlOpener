@@ -1,11 +1,5 @@
 package me.kennydude.dev.urlopener;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +15,10 @@ import com.koushikdutta.async.AsyncServerSocket;
 import com.koushikdutta.async.AsyncSocket;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
-import com.koushikdutta.async.LineEmitter;
-import com.koushikdutta.async.LineEmitter.StringCallback;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.callback.DataCallback;
 import com.koushikdutta.async.callback.ListenCallback;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -59,6 +51,7 @@ public class HostServerService extends Service {
 	WebServer mComputerBridge;
 	AsyncServer mLocalServer;
 	
+	@SuppressLint("UseSparseArrays")
 	//Socket mComputerSocket;
 	HashMap<Integer, AsyncSocket> mRequests = new HashMap<Integer, AsyncSocket>();
 
@@ -173,7 +166,7 @@ public class HostServerService extends Service {
 			}
 			
 		}).start();
-		
+
 		
 		mLocalServer = new AsyncServer();
 		mLocalServer.setAutostart(true);
@@ -210,28 +203,32 @@ public class HostServerService extends Service {
 					}
 					
 				});
-				
-				
-				LineEmitter le = new LineEmitter(socket);
-				le.setLineCallback(new StringCallback(){
+				socket.setDataCallback(new DataCallback(){
 
 					@Override
-					public void onStringAvailable(String line) {
-						line = line + "\n";
+					public void onDataAvailable(DataEmitter arg0,
+							ByteBufferList bb) {
+						StringBuilder data = new StringBuilder();
 						
-						Log.d("hss", line);
+						while (bb.remaining() > 0) {
+		                    byte b = bb.get();
+		                    data.append((char)b);
+		                }
+						
+						String line = data.toString();
 						
 						try{
 							JSONObject jo = new JSONObject();
 							jo.put("id", requestId);
 							jo.put("event", "d");
-							jo.put("c", line);//Base64.encodeToString( line.getBytes(), Base64.DEFAULT ) );
+							jo.put("c", line);
 							
 							mComputerSocket.send( jo.toString() );
 						} catch(Exception e){
 							e.printStackTrace();
 						}
 					}
+					
 				});
 			}
 			
