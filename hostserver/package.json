@@ -1,0 +1,7 @@
+{
+	"name" : "adb-hostserver",
+	"version" : "0.1.0",
+	"dependencies" : {
+		"ws" : "*"
+	}
+}

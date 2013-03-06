@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -24,7 +25,7 @@ public class MainActivity extends ListActivity {
 		@SuppressWarnings("rawtypes")
 		public Class ActivityClass;
 		public int StringId;
-		public int descriptionId;
+		public int DescriptionId;
 	}
 	
     @Override
@@ -36,31 +37,39 @@ public class MainActivity extends ListActivity {
         DevTool u = new DevTool();
         u.ActivityClass = UrlOpenerActivity.class;
         u.StringId = R.string.url_opener;
-        u.descriptionId = R.string.url_opener_desc;
+        u.DescriptionId = R.string.url_opener_desc;
         tools.add(u);
         
         u = new DevTool();
         u.ActivityClass = WakeLockActivity.class;
         u.StringId = R.string.wake_locks;
-        u.descriptionId = R.string.wake_locks_desc;
+        u.DescriptionId = R.string.wake_locks_desc;
         tools.add(u);
 
         u = new DevTool();
         u.ActivityClass = Mod11Activity.class;
         u.StringId = R.string.modulus_11;
-        u.descriptionId = R.string.modulus_11_desc;
+        u.DescriptionId = R.string.modulus_11_desc;
         tools.add(u);
+        
+        if(Build.VERSION.SDK_INT >= 8){
+	        u = new DevTool();
+	        u.ActivityClass = HostServerActivity.class;
+	        u.StringId = R.string.host_server;
+	        u.DescriptionId = R.string.host_server_desc;
+	        tools.add(u);
+        }
         
         u = new DevTool();
         u.ActivityClass = IconActivity.class;
         u.StringId = R.string.icons;
-        u.descriptionId = R.string.icons_desc;
+        u.DescriptionId = R.string.icons_desc;
         tools.add(u);
         
         u = new DevTool();
         u.ActivityClass = ANRActivity.class;
         u.StringId = R.string.anr;
-        u.descriptionId = R.string.anr_desc;
+        u.DescriptionId = R.string.anr_desc;
         tools.add(u);
         
         fa = new FeedAdapter(this,android.R.layout.simple_list_item_1 , tools);
@@ -91,8 +100,8 @@ public class MainActivity extends ListActivity {
 			DevTool dt = this.getItem(position);
 			
 			ed.setPadding(15, 15, 15, 15);
-			ed.setText(Html.fromHtml("<big><big><big>" + getText(dt.StringId) + "</big></big></big><br/>"
-					+ getText(dt.descriptionId)));
+			ed.setText(Html.fromHtml("<big><big>" + getText(dt.StringId) + "</big></big><br/>"
+					+ getText(dt.DescriptionId)));
 			
 			return ed;
 		}

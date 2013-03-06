@@ -14,3 +14,5 @@
 # Copied from http://github.com/github/gitignore
 gen
 bin
+
+hostserver/node_modules
